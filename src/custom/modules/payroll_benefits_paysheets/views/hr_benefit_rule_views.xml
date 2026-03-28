@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ========== FORM VIEW ========== -->
+    <record id="view_hr_benefit_rule_form" model="ir.ui.view">
+        <field name="name">hr.benefit.rule.form</field>
+        <field name="model">hr.benefit.rule</field>
+        <field name="arch" type="xml">
+            <form string="Regla de Beneficio">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archivada" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre de la regla..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Definición">
+                            <field name="code"/>
+                            <field name="contract_type"/>
+                            <field name="benefit_type"/>
+                            <field name="frequency"/>
+                            <field name="min_service_months"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Fórmula">
+                            <field name="formula" widget="ace" options="{'mode': 'python'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descripción / Base Legal">
+                            <field name="description" placeholder="Referencia legal LOTTT..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ========== TREE VIEW ========== -->
+    <record id="view_hr_benefit_rule_tree" model="ir.ui.view">
+        <field name="name">hr.benefit.rule.tree</field>
+        <field name="model">hr.benefit.rule</field>
+        <field name="arch" type="xml">
+            <list string="Reglas de Beneficios">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="contract_type"/>
+                <field name="benefit_type"/>
+                <field name="frequency"/>
+                <field name="min_service_months"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ========== SEARCH VIEW ========== -->
+    <record id="view_hr_benefit_rule_search" model="ir.ui.view">
+        <field name="name">hr.benefit.rule.search</field>
+        <field name="model">hr.benefit.rule</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Reglas de Beneficio">
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="filter_full_time" string="Tiempo Completo"
+                        domain="[('contract_type', '=', 'full_time')]"/>
+                <filter name="filter_part_time" string="Medio Tiempo"
+                        domain="[('contract_type', '=', 'part_time')]"/>
+                <filter name="filter_temporary" string="Temporal"
+                        domain="[('contract_type', '=', 'temporary')]"/>
+                <separator/>
+                <filter name="filter_active" string="Activas"
+                        domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="Archivadas"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_contract_type" string="Tipo de Contrato"
+                            context="{'group_by': 'contract_type'}"/>
+                    <filter name="group_benefit_type" string="Tipo de Beneficio"
+                            context="{'group_by': 'benefit_type'}"/>
+                    <filter name="group_frequency" string="Frecuencia"
+                            context="{'group_by': 'frequency'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ========== ACTION ========== -->
+    <record id="action_hr_benefit_rule" model="ir.actions.act_window">
+        <field name="name">Reglas de Beneficios LOTTT</field>
+        <field name="res_model">hr.benefit.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_benefit_rule_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+    <!-- ========== MENU ========== -->
+    <!-- Changed parent from hr_payroll to hr.menu_human_resources_configuration -->
+    <menuitem id="menu_hr_benefit_rule_config"
+              name="Reglas de Beneficios (LOTTT)"
+              parent="hr.menu_human_resources_configuration"
+              action="action_hr_benefit_rule"
+              sequence="50"/>
+
+</odoo>
