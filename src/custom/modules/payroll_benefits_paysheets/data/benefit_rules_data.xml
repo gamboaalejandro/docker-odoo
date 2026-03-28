@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- =====================================================
+             TIEMPO COMPLETO (full_time) — 4 Reglas
+             ===================================================== -->
+
+        <record id="rule_utilities_full_time" model="hr.benefit.rule">
+            <field name="name">Utilidades - Tiempo Completo</field>
+            <field name="code">UTIL_FT</field>
+            <field name="contract_type">full_time</field>
+            <field name="benefit_type">utilities</field>
+            <field name="frequency">yearly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * utilities_days / 12</field>
+            <field name="description">LOTTT Art. 131-132: Entre 30 y 120 días de salario base, proporcional al año. Se paga anualmente (diciembre) o proporcional a la fracción de año laborado.</field>
+        </record>
+
+        <record id="rule_vacation_bonus_full_time" model="hr.benefit.rule">
+            <field name="name">Bono Vacacional - Tiempo Completo</field>
+            <field name="code">BVAC_FT</field>
+            <field name="contract_type">full_time</field>
+            <field name="benefit_type">vacation_bonus</field>
+            <field name="frequency">yearly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * (vacation_bonus_days + service_years) / 12</field>
+            <field name="description">LOTTT Art. 192: 15 días mínimo + 1 día adicional por cada año de servicio. Se paga junto con las vacaciones o proporcionalmente.</field>
+        </record>
+
+        <record id="rule_social_benefits_guarantee_full_time" model="hr.benefit.rule">
+            <field name="name">Prestaciones Sociales (Garantía) - Tiempo Completo</field>
+            <field name="code">PSG_FT</field>
+            <field name="contract_type">full_time</field>
+            <field name="benefit_type">social_benefits_guarantee</field>
+            <field name="frequency">quarterly</field>
+            <field name="min_service_months">3</field>
+            <field name="formula">integral_daily_salary * 15</field>
+            <field name="description">LOTTT Art. 142: 15 días de salario integral por cada trimestre de servicio. Requiere mínimo 3 meses de antigüedad.</field>
+        </record>
+
+        <record id="rule_cesta_ticket_full_time" model="hr.benefit.rule">
+            <field name="name">Cesta Ticket - Tiempo Completo</field>
+            <field name="code">CT_FT</field>
+            <field name="contract_type">full_time</field>
+            <field name="benefit_type">cesta_ticket</field>
+            <field name="frequency">monthly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">cesta_ticket_amount</field>
+            <field name="description">Ley de Alimentación para los Trabajadores (LAT): Monto mensual fijo del beneficio de alimentación. Se otorga a jornada completa.</field>
+        </record>
+
+        <!-- =====================================================
+             MEDIO TIEMPO (part_time) — 4 Reglas
+             ===================================================== -->
+
+        <record id="rule_utilities_part_time" model="hr.benefit.rule">
+            <field name="name">Utilidades - Medio Tiempo</field>
+            <field name="code">UTIL_PT</field>
+            <field name="contract_type">part_time</field>
+            <field name="benefit_type">utilities</field>
+            <field name="frequency">yearly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * utilities_days / 12 * work_factor</field>
+            <field name="description">LOTTT Art. 131-132: Utilidades proporcionales al factor de jornada (50%). Se calcula sobre la base del salario a medio tiempo.</field>
+        </record>
+
+        <record id="rule_vacation_bonus_part_time" model="hr.benefit.rule">
+            <field name="name">Bono Vacacional - Medio Tiempo</field>
+            <field name="code">BVAC_PT</field>
+            <field name="contract_type">part_time</field>
+            <field name="benefit_type">vacation_bonus</field>
+            <field name="frequency">yearly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * (vacation_bonus_days + service_years) / 12 * work_factor</field>
+            <field name="description">LOTTT Art. 192: Bono vacacional proporcional al factor de jornada (50%).</field>
+        </record>
+
+        <record id="rule_social_benefits_guarantee_part_time" model="hr.benefit.rule">
+            <field name="name">Prestaciones Sociales (Garantía) - Medio Tiempo</field>
+            <field name="code">PSG_PT</field>
+            <field name="contract_type">part_time</field>
+            <field name="benefit_type">social_benefits_guarantee</field>
+            <field name="frequency">quarterly</field>
+            <field name="min_service_months">3</field>
+            <field name="formula">integral_daily_salary * 15 * work_factor</field>
+            <field name="description">LOTTT Art. 142: Prestaciones sociales proporcionales al factor de jornada (50%). Requiere mínimo 3 meses.</field>
+        </record>
+
+        <record id="rule_cesta_ticket_part_time" model="hr.benefit.rule">
+            <field name="name">Cesta Ticket - Medio Tiempo</field>
+            <field name="code">CT_PT</field>
+            <field name="contract_type">part_time</field>
+            <field name="benefit_type">cesta_ticket</field>
+            <field name="frequency">monthly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">cesta_ticket_amount * work_factor</field>
+            <field name="description">LAT: Cesta Ticket proporcional al factor de jornada (50%).</field>
+        </record>
+
+        <!-- =====================================================
+             TEMPORAL (temporary) — 4 Reglas
+             ===================================================== -->
+
+        <record id="rule_utilities_temporary" model="hr.benefit.rule">
+            <field name="name">Utilidades - Temporal</field>
+            <field name="code">UTIL_TMP</field>
+            <field name="contract_type">temporary</field>
+            <field name="benefit_type">utilities</field>
+            <field name="frequency">end_of_contract</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * utilities_days / 12</field>
+            <field name="description">LOTTT Art. 131-132: Utilidades proporcionales al tiempo trabajado, pagaderas al finalizar el contrato temporal.</field>
+        </record>
+
+        <record id="rule_vacation_bonus_temporary" model="hr.benefit.rule">
+            <field name="name">Bono Vacacional - Temporal</field>
+            <field name="code">BVAC_TMP</field>
+            <field name="contract_type">temporary</field>
+            <field name="benefit_type">vacation_bonus</field>
+            <field name="frequency">end_of_contract</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">salary_base * (vacation_bonus_days + service_years) / 12</field>
+            <field name="description">LOTTT Art. 192: Bono vacacional proporcional al tiempo trabajado, pagadero al fin del contrato.</field>
+        </record>
+
+        <record id="rule_social_benefits_guarantee_temporary" model="hr.benefit.rule">
+            <field name="name">Prestaciones Sociales (Garantía) - Temporal</field>
+            <field name="code">PSG_TMP</field>
+            <field name="contract_type">temporary</field>
+            <field name="benefit_type">social_benefits_guarantee</field>
+            <field name="frequency">quarterly</field>
+            <field name="min_service_months">3</field>
+            <field name="formula">integral_daily_salary * 15</field>
+            <field name="description">LOTTT Art. 142: Prestaciones sociales trimestrales. Aplica solo si el contrato temporal supera los 3 meses.</field>
+        </record>
+
+        <record id="rule_cesta_ticket_temporary" model="hr.benefit.rule">
+            <field name="name">Cesta Ticket - Temporal</field>
+            <field name="code">CT_TMP</field>
+            <field name="contract_type">temporary</field>
+            <field name="benefit_type">cesta_ticket</field>
+            <field name="frequency">monthly</field>
+            <field name="min_service_months">0</field>
+            <field name="formula">cesta_ticket_amount</field>
+            <field name="description">LAT: Cesta Ticket mensual. Se otorga en su totalidad independiente del tipo de contrato temporal.</field>
+        </record>
+
+    </data>
+</odoo>

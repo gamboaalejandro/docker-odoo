@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_benefit_rule_user,hr.benefit.rule.user,model_hr_benefit_rule,base.group_user,1,0,0,0
+access_hr_benefit_rule_manager,hr.benefit.rule.manager,model_hr_benefit_rule,hr.group_hr_manager,1,1,1,1
+access_hr_payslip_benefit_line_user,hr.payslip.benefit.line.user,model_hr_payslip_benefit_line,base.group_user,1,0,0,0
+access_hr_payslip_benefit_line_manager,hr.payslip.benefit.line.manager,model_hr_payslip_benefit_line,hr.group_hr_manager,1,1,1,1
+access_hr_payroll_test_user,hr.payroll.test.user,model_hr_payroll_test,base.group_user,1,0,0,0
+access_hr_payroll_test_manager,hr.payroll.test.manager,model_hr_payroll_test,hr.group_hr_manager,1,1,1,1

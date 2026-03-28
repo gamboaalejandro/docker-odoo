@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend hr.contract form to add LOTTT fields -->
+    <record id="view_hr_contract_form_inherit_lottt" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.lottt</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add contract type field near the top of the form -->
+            <field name="company_id" position="after">
+                <field name="contract_type_ve"/>
+            </field>
+
+            <!-- Add a notebook page for Venezuelan benefit configuration -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Beneficios LOTTT" name="lottt_benefits">
+                    <group>
+                        <group string="Parámetros de Cálculo">
+                            <field name="utilities_days"/>
+                            <field name="vacation_bonus_days"/>
+                            <field name="cesta_ticket_amount"/>
+                        </group>
+                        <group string="Salario Integral (Calculado)">
+                            <field name="integral_salary" readonly="1"/>
+                            <field name="integral_daily_salary" readonly="1"/>
+                            <field name="work_factor" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Antigüedad">
+                            <field name="service_years" readonly="1"/>
+                            <field name="service_months" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
