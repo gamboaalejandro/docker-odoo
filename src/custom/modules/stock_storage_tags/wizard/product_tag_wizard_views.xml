@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configuración del Asistente (Wizard) -->
+    <record id="view_product_tag_wizard_form" model="ir.ui.view">
+        <field name="name">product.tag.wizard.form</field>
+        <field name="model">product.tag.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Asignación Rápida de Etiquetas">
+                <p>Selecciona las etiquetas de almacenamiento que aplican a este producto:</p>
+                <group>
+                    <field name="product_tmpl_id" invisible="1"/>
+                    <field name="product_id" invisible="1"/>
+                    <field name="storage_tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Ej. Rotación Rápida, Peligroso..."/>
+                </group>
+                <footer>
+                    <button string="Aplicar" name="action_apply_tags" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción que levanta el Wizard -->
+    <record id="action_product_tag_wizard" model="ir.actions.act_window">
+        <field name="name">Gestionar Etiquetas Inteligentes</field>
+        <field name="res_model">product.tag.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

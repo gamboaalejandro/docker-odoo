@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="discount_rule_wholesale_10" model="account.discount.rule">
+        <field name="name">Descuento Base Mayoristas</field>
+        <field name="sequence">50</field>
+        <field name="customer_type">wholesale</field>
+        <field name="discount_type">percentage</field>
+        <field name="discount_percentage">10.0</field>
+    </record>
+
+    <record id="discount_rule_vip_15" model="account.discount.rule">
+        <field name="name">Descuento Fijo VIP</field>
+        <field name="sequence">30</field>
+        <field name="customer_type">vip</field>
+        <field name="discount_type">percentage</field>
+        <field name="discount_percentage">15.0</field>
+    </record>
+
+    <record id="discount_rule_vip_qty" model="account.discount.rule">
+        <field name="name">Descuento VIP por Volúmen (Dinámico)</field>
+        <field name="sequence">20</field>
+        <field name="customer_type">vip</field>
+        <field name="discount_type">formula</field>
+        <field name="discount_formula">result = 20.0 if line.quantity > 50 else 15.0</field>
+    </record>
+</odoo>
