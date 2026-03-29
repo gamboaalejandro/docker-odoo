@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Lista de Tipos de Cuenta Estándar de Odoo para la descripción -->
+    <!-- asset_receivable, asset_cash, asset_current, asset_non_current, asset_prepayments, asset_fixed, liability_payable, liability_credit_card, liability_current, liability_non_current, equity, equity_unallocated, income, income_other, expense, expense_depreciation, expense_direct_cost -->
+
+    <!-- VISTA FORMULARIO -->
+    <record id="view_account_financial_kpi_form" model="ir.ui.view">
+        <field name="name">account.financial.kpi.form</field>
+        <field name="model">account.financial.kpi</field>
+        <field name="arch" type="xml">
+            <form string="Indicador Financiero">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Ej: Índice de Liquidez" required="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Cálculo">
+                            <field name="formula" widget="text" />
+                            <field name="evaluation_direction" widget="radio"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Umbrales (Alertas)">
+                            <field name="threshold_warning" string="Límite Advertencia (Amarillo)"/>
+                            <field name="threshold_critical" string="Límite Crítico (Rojo)"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Resultado Actual en Tiempo Real">
+                            <field name="current_value" readonly="1" force_save="1" decoration-success="state == 'success'" decoration-warning="state == 'warning'" decoration-danger="state == 'danger'"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" style="margin-top: 20px;">
+                        <strong>Variables Soportadas en la Fórmula:</strong><br/>
+                        Puedes escribir nombres de tipos de cuenta internos de Odoo 18, tales como:<br/>
+                        <ul>
+                            <li><b>Activos:</b> `asset_receivable`, `asset_cash`, `asset_current`, `asset_non_current`, `asset_fixed`</li>
+                            <li><b>Pasivos:</b> `liability_payable`, `liability_current`, `liability_non_current`</li>
+                            <li><b>Resultados:</b> `income`, `expense`, `expense_direct_cost`</li>
+                        </ul>
+                        <em>Recuerda: Odoo maneja saldos de Pasivo y de Ingresos (Income) con signo negativo de forma nativa (Naturaleza Acreedora). Multiplica por -1 en tu fórmula si necesitas que arrojen números positivos en la división.</em>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- VISTA LISTA -->
+    <record id="view_account_financial_kpi_tree" model="ir.ui.view">
+        <field name="name">account.financial.kpi.list</field>
+        <field name="model">account.financial.kpi</field>
+        <field name="arch" type="xml">
+            <list string="Indicadores Financieros" default_order="sequence, id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="formula" optional="show"/>
+                <field name="evaluation_direction" optional="hide"/>
+                <field name="current_value" decoration-success="state == 'success'" decoration-warning="state == 'warning'" decoration-danger="state == 'danger'"/>
+                <field name="state" widget="badge" decoration-success="state == 'success'" decoration-warning="state == 'warning'" decoration-danger="state == 'danger'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- VISTA KANBAN (DASHBOARD) -->
+    <record id="view_account_financial_kpi_kanban" model="ir.ui.view">
+        <field name="name">account.financial.kpi.kanban</field>
+        <field name="model">account.financial.kpi</field>
+        <field name="arch" type="xml">
+            <kanban string="Dashboard Financiero" create="false" class="o_kanban_dashboard" group_create="false">
+                <field name="name"/>
+                <field name="current_value"/>
+                <field name="state"/>
+                <field name="formula"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click text-white p-3 shadow-sm rounded-3 mb-3 #{record.state.raw_value == 'success' ? 'bg-success' : record.state.raw_value == 'warning' ? 'bg-warning' : record.state.raw_value == 'danger' ? 'bg-danger' : 'bg-secondary'}">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <h3 class="mb-0 text-white o_primary"><field name="name"/></h3>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content mt-3 p-0">
+                                <div class="row">
+                                    <div class="col-12 h1 o_kanban_primary_bottom text-center mb-0 text-white font-weight-bold">
+                                        <field name="current_value" widget="float" options="{'digits': [69, 2]}"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 text-center text-white-50 mt-2 small">
+                                        <em>Fórmula: <field name="formula"/></em>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ACCIONES -->
+    <record id="action_account_financial_kpi_dashboard" model="ir.actions.act_window">
+        <field name="name">Salud Financiera</field>
+        <field name="res_model">account.financial.kpi</field>
+        <field name="view_mode">kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                El Dashboard Financiero aún no tiene Indicadores
+            </p>
+            <p>Configura las fórmulas de rentabilidad en Ajustes -> Configuración Financiera.</p>
+        </field>
+    </record>
+
+    <record id="action_account_financial_kpi_config" model="ir.actions.act_window">
+        <field name="name">Configurar Indicadores (KPI)</field>
+        <field name="res_model">account.financial.kpi</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- MENÚS -->
+    <!-- Menú Raíz (Contabilidad) Dashboard -->
+    <menuitem id="menu_account_financial_dashboard"
+              name="Salud Financiera"
+              parent="account.menu_finance_entries"
+              action="action_account_financial_kpi_dashboard"
+              sequence="1"/>
+
+    <!-- Menú Configuración -->
+    <menuitem id="menu_account_financial_kpi_config"
+              name="Indicadores Salud Financiera"
+              parent="account.menu_finance_configuration"
+              action="action_account_financial_kpi_config"
+              groups="account.group_account_manager"
+              sequence="100"/>
+</odoo>
