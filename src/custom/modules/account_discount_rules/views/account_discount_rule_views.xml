@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_discount_rule_tree" model="ir.ui.view">
+        <field name="name">account.discount.rule.tree</field>
+        <field name="model">account.discount.rule</field>
+        <field name="arch" type="xml">
+            <list string="Reglas de Descuento">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="customer_type"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="discount_type"/>
+                <field name="discount_percentage" string="Dscto %" invisible="discount_type != 'percentage'"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_account_discount_rule_form" model="ir.ui.view">
+        <field name="name">account.discount.rule.form</field>
+        <field name="model">account.discount.rule</field>
+        <field name="arch" type="xml">
+            <form string="Regla de Descuento">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Ej: Dscto 10% Mayoristas"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Condiciones de Aplicación">
+                            <field name="active" invisible="1"/>
+                            <field name="sequence"/>
+                            <field name="customer_type"/>
+                            <field name="partner_id" placeholder="Opcional. Ignora Tipo de Cliente"/>
+                            <field name="product_id" placeholder="Opcional. Exclusivo para este producto"/>
+                        </group>
+                        <group string="Cálculo del Descuento">
+                            <field name="discount_type" widget="radio"/>
+                            <field name="discount_percentage" invisible="discount_type != 'percentage'"/>
+                            <field name="discount_formula" invisible="discount_type != 'formula'" widget="ace" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_discount_rule" model="ir.actions.act_window">
+        <field name="name">Reglas de Descuento en Facturación</field>
+        <field name="res_model">account.discount.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera política de descuento
+            </p>
+            <p>
+                Automatiza los descuentos en tus facturas según el tipo de cliente, cliente específico o producto.
+            </p>
+        </field>
+    </record>
+
+    <!-- Agregar el menú dentro de Contabilidad -> Configuración -->
+    <menuitem id="menu_account_discount_rule"
+              name="Reglas de Descuento"
+              parent="account.menu_finance_configuration"
+              action="action_account_discount_rule"
+              sequence="55"/>
+</odoo>

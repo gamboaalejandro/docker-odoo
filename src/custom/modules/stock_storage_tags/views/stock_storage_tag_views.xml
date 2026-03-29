@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_storage_tag_tree" model="ir.ui.view">
+        <field name="name">stock.storage.tag.list</field>
+        <field name="model">stock.storage.tag</field>
+        <field name="arch" type="xml">
+            <list string="Etiquetas de Almacenamiento" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_stock_storage_tag" model="ir.actions.act_window">
+        <field name="name">Etiquetas Inteligentes</field>
+        <field name="res_model">stock.storage.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera Etiqueta de Almacenamiento
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_stock_storage_tag"
+              name="Etiquetas Inteligentes"
+              parent="stock.menu_stock_config_settings"
+              action="action_stock_storage_tag"
+              sequence="55"/>
+</odoo>

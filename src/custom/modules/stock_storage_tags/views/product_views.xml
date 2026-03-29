@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inyectar botón e ID oculto en Formulario de Producto Base -->
+    <record id="view_product_template_form_inherit_tags" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.tags</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(stock_storage_tags.action_product_tag_wizard)d" 
+                        string="Gestionar Etiquetas" 
+                        type="action" 
+                        class="oe_highlight" 
+                        icon="fa-tags"
+                        context="{'active_id': id, 'active_model': 'product.template'}"/>
+            </xpath>
+            <xpath expr="//div[@name='options']" position="after">
+                <div class="oe_inline">
+                    <field name="storage_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" readonly="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inyectar botón e ID oculto en Formulario de Variante -->
+    <record id="view_product_product_form_inherit_tags" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.tags</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(stock_storage_tags.action_product_tag_wizard)d" 
+                        string="Gestionar Etiquetas Variante" 
+                        type="action" 
+                        class="oe_highlight" 
+                        icon="fa-tags"
+                        context="{'active_id': id, 'active_model': 'product.product'}"/>
+            </xpath>
+            <xpath expr="//div[@name='options']" position="after">
+                <div class="oe_inline">
+                    <field name="storage_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" readonly="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kanban visual con colores -->
+    <record id="product_template_kanban_view_inherit_tags" model="ir.ui.view">
+        <field name="name">product.template.kanban.inherit.tags</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_properties']" position="after">
+                <div name="tags" class="mt-1">
+                    <field name="storage_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Búsqueda y Filtros Nativos -->
+    <record id="product_template_search_view_inherit_tags" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.tags</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="storage_tag_ids" string="Etiquetas"/>
+            </xpath>
+            <xpath expr="//filter[@name='categ_id']" position="after">
+                <filter string="Etiquetas Almacén" name="group_by_storage_tag" context="{'group_by': 'storage_tag_ids'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Forzar el GroupBy de Odoo nativo sobre la acción de inventario principal -->
+    <record id="stock.stock_product_normal_action" model="ir.actions.act_window">
+        <field name="context">{"search_default_group_by_storage_tag": 1, "search_default_consumable": 1, "default_detailed_type": "consu"}</field>
+    </record>
+
+</odoo>

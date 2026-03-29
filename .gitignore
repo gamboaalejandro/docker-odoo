@@ -3,3 +3,4 @@
 .resources/dbconfigs/pg_hba.conf
 **/.vscode/
 venv
+*.pyc
