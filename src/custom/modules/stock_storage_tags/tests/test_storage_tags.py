@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo.tests import common, tagged
-
+from psycopg2 import IntegrityError
+from odoo.tools import mute_logger
 @tagged('post_install', '-at_install', 'stock_storage_tags')
 class TestStorageTags(common.TransactionCase):
     
@@ -23,7 +24,7 @@ class TestStorageTags(common.TransactionCase):
         # Crear un producto (Plantilla)
         cls.product_tmpl = cls.env['product.template'].create({
             'name': 'Ácido Sulfúrico',
-            'type': 'product'
+            'type': 'consu'
         })
 
         # Al crearse el template con una variante única, Odoo crea la variante:
@@ -85,3 +86,54 @@ class TestStorageTags(common.TransactionCase):
         peligrosos = self.env['product.template'].search([('storage_tag_ids', 'in', self.tag_peligroso.ids)])
         self.assertIn(self.product_tmpl, peligrosos)
         self.assertNotIn(prod2, peligrosos)
+
+
+    def test_05_prevent_duplicate_tags(self):
+        """Verifica que no se puedan crear dos etiquetas con el mismo nombre"""
+        self.env['stock.storage.tag'].create({
+            'name': 'Zona Peligrosa',
+            'color': 1
+        })
+        
+        # mute_logger evita que el error esperado ensucie el log de la terminal
+        with self.assertRaises(IntegrityError), mute_logger('odoo.sql_db'):
+            self.env['stock.storage.tag'].create({
+                'name': 'Zona Peligrosa', # Nombre idéntico
+                'color': 2
+            })
+    def test_06_tag_deletion_cascade(self):
+        """Verifica que al borrar una etiqueta, el producto no se vea afectado, solo se desvincule"""
+        # Crear etiqueta y producto
+        tag = self.env['stock.storage.tag'].create({'name': 'Baja Rotación'})
+        product = self.env['product.template'].create({
+            'name': 'Producto de Prueba Borrado',
+            'storage_tag_ids': [(4, tag.id)]
+        })
+        
+        self.assertIn(tag, product.storage_tag_ids)
+        
+        # Eliminar la etiqueta
+        tag.unlink()
+        
+        # Validar que el producto sigue existiendo pero ya no tiene la etiqueta
+        self.assertTrue(product.exists(), "El producto no debió borrarse.")
+        self.assertFalse(product.storage_tag_ids, "La relación debió limpiarse al borrar la etiqueta.")
+
+    def test_07_wizard_clear_all_tags(self):
+        """Verifica que el wizard pueda eliminar todas las etiquetas de un producto si se envía vacío"""
+        # Asignamos una etiqueta inicialmente
+        tag = self.env['stock.storage.tag'].create({'name': 'Temporal'})
+        self.product_tmpl.storage_tag_ids = [(6, 0, [tag.id])]
+        self.assertTrue(self.product_tmpl.storage_tag_ids)
+        
+        # Simulamos la ejecución del wizard dejando el campo de etiquetas vacío
+        wizard = self.env['product.tag.wizard'].with_context(
+            active_model='product.template',
+            active_id=self.product_tmpl.id
+        ).create({
+            'storage_tag_ids': [(5, 0, 0)] # El comando 5 limpia el Many2Many
+        })
+        wizard.action_apply_tags()
+        
+        # Validamos que el producto ya no tenga etiquetas
+        self.assertFalse(self.product_tmpl.storage_tag_ids, "El wizard debió limpiar todas las etiquetas del producto.")

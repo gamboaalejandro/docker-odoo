@@ -9,3 +9,12 @@ class StockMove(models.Model):
         string='Etiquetas del Producto',
         readonly=True
     )
+
+class StockMoveLine(models.Model):
+    _inherit = 'stock.move.line'
+
+    storage_tag_ids = fields.Many2many(
+        related='product_id.storage_tag_ids',
+        string='Etiquetas del Producto',
+        readonly=True
+    )
