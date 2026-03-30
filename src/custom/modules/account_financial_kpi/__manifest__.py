@@ -15,6 +15,7 @@
         'security/ir.model.access.csv',
         'views/account_financial_kpi_views.xml',
         'data/kpi_data.xml',
+        'data/kpi_demo_move.xml',
     ],
     'installable': True,
     'application': False,

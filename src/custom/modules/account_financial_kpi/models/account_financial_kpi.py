@@ -46,11 +46,22 @@ class AccountFinancialKpi(models.Model):
             ['account_type']
         )
         
-        # Diccionario unificado { 'asset_current': 50000.0, 'liability_current': -20000.0, ... }
-        balance_cache = {}
+        # Tipos de cuenta estándar de Odoo 18 para pre-poblar el contexto (Evitar NameError en safe_eval)
+        balance_cache = {
+            'asset_receivable': 0.0, 'asset_cash': 0.0, 'asset_current': 0.0,
+            'asset_non_current': 0.0, 'asset_prepayments': 0.0, 'asset_fixed': 0.0,
+            'liability_payable': 0.0, 'liability_credit_card': 0.0, 'liability_current': 0.0,
+            'liability_non_current': 0.0, 'equity': 0.0, 'equity_unallocated': 0.0,
+            'income': 0.0, 'income_other': 0.0, 'expense': 0.0,
+            'expense_depreciation': 0.0, 'expense_direct_cost': 0.0, 'off_balance': 0.0,
+            'asset_inventory': 0.0 # Por si se utiliza como nombre de variable legada
+        }
+
         for res in lines_data:
             acc_type = res.get('account_type')
             if acc_type:
+                # Odoo 16+ read_group con ['balance:sum'] a veces devuelve 'balance' o 'balance:sum'
+                balance_cache[acc_type] = res.get('balance') or res.get('balance:sum', 0.0)
                 # Opcional: Invertir saldos de Pasivo y Capital para que den "positivo" en las divisiones financieras,
                 # o dejarlos raw (con su signo matemático base Odoo).
                 # Usaremos RAW (balance) para que el analista reste o sume de acuerdo al estándar.
