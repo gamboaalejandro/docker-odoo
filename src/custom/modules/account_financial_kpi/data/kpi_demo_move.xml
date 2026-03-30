@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Cuentas de Demostración para KPIs -->
+        <record id="demo_kpi_account_cash" model="account.account">
+            <field name="name">Banco Demo KPI (Activo)</field>
+            <field name="code">11010100</field>
+            <field name="account_type">asset_cash</field>
+        </record>
+        
+        <record id="demo_kpi_account_inventory" model="account.account">
+            <field name="name">Inventario Demo KPI (Activo)</field>
+            <field name="code">11020100</field>
+            <field name="account_type">asset_current</field>
+        </record>
+        
+        <record id="demo_kpi_account_receivable" model="account.account">
+            <field name="name">CxC Demo KPI (Activo)</field>
+            <field name="code">11030100</field>
+            <field name="account_type">asset_receivable</field>
+        </record>
+
+        <record id="demo_kpi_account_fixed" model="account.account">
+            <field name="name">Activo Fijo Demo KPI</field>
+            <field name="code">12010100</field>
+            <field name="account_type">asset_fixed</field>
+        </record>
+
+        <record id="demo_kpi_account_liability" model="account.account">
+            <field name="name">Cuentas por Pagar Demo KPI (Pasivo)</field>
+            <field name="code">21010100</field>
+            <field name="account_type">liability_current</field>
+        </record>
+
+        <record id="demo_kpi_account_income" model="account.account">
+            <field name="name">Ventas Demo KPI (Ingreso)</field>
+            <field name="code">41010100</field>
+            <field name="account_type">income</field>
+        </record>
+
+        <record id="demo_kpi_account_expense" model="account.account">
+            <field name="name">Gastos Generales Demo KPI (Egreso)</field>
+            <field name="code">51010100</field>
+            <field name="account_type">expense</field>
+        </record>
+
+        <!-- Asiento Contable Inicializado en Estado Borrador -->
+        <record id="demo_kpi_journal_entry" model="account.move">
+            <field name="move_type">entry</field>
+            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="ref">Saldos Iniciales Test KPI (Todo Verde)</field>
+            <field name="line_ids" eval="[
+                (0, 0, {'account_id': ref('demo_kpi_account_cash'), 'name': 'Efectivo', 'debit': 85000.0, 'credit': 0.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_inventory'), 'name': 'Inventario', 'debit': 20000.0, 'credit': 0.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_receivable'), 'name': 'Cuentas por Cobrar', 'debit': 15000.0, 'credit': 0.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_fixed'), 'name': 'Equipos', 'debit': 20000.0, 'credit': 0.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_expense'), 'name': 'Gastos Operativos', 'debit': 200000.0, 'credit': 0.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_liability'), 'name': 'Deudas a Corto Plazo', 'debit': 0.0, 'credit': 30000.0}),
+                (0, 0, {'account_id': ref('demo_kpi_account_income'), 'name': 'Ingresos por Ventas', 'debit': 0.0, 'credit': 310000.0}),
+            ]"/>
+        </record>
+
+        <!-- Forzamos la publicación del asiento para que afecte el eval_context (parent_state = posted) -->
+        <function model="account.move" name="action_post">
+            <value eval="[ref('demo_kpi_journal_entry')]"/>
+        </function>
+
+    </data>
+</odoo>
